@@ -13,7 +13,7 @@
     <version>v1.0.0</version>
 
     <description>
-        第2版本,版本1是项目login
+        第2版本,版本1是项目login,权限管理+前后端分离
     </description>
 
     <properties>
