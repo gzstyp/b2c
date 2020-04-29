@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+
+    <script src="../js/vue.min.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../eui/index.js"></script>
+
+    <script src="../js/App.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/checkIsLogin.js"></script>
+    <script src="../js/RefreshComponent.js"></script>
+    <script src="../js/FormBoxComponent.js"></script>
+    <script src="../js/DataListComponent.js"></script>
+
+
+    <link rel="stylesheet" href="../css/template.css">
+
+</head>
+<body>
+<div id="app">
+    <refresh-comm></refresh-comm>
+
+    <form-box-comm ref="myForm"
+                   :box-title="boxTitle"
+                   :form-type="0"
+                   :add-api-url  = "url"
+                   :edit-api-url = "url"
+                   :model="model"
+                   :id-key="model.productId"
+                   :on-success = "onSuccess">
+
+        <!--添加自己的元素-->
+        <template>
+            <div class="item">
+                <label for="productName">商品名称：</label>
+                <input id="productName" v-model="model.productName">
+            </div>
+
+            <div class="item">
+                <label for="num">库存：</label>
+                <input id="num" v-model="model.num">
+            </div>
+
+            <div class="item">
+                <label for="price">价格：</label>
+                <input id="price" v-model="model.price">
+            </div>
+
+        </template>
+
+    </form-box-comm>
+
+    <data-list-comm ref ="myList"
+                    :list-api-url="url"
+                    :delete-api-url="url"
+                    row-id-key="productId"
+                    :model-attr="modelAttr"
+                    :on-edit-form = "onEditForm"
+                    :on-add-new-form = "onAddNewForm"
+                    is-page="true">
+    </data-list-comm>
+
+</div>
+<script>
+
+    let vue = new Vue({
+        el: "#app",
+        data: {
+            url: global_api_url + "productTable",
+            boxTitle:'新增商品',
+            //表单
+            model: {
+                productId: null,
+                productName: null,
+                num: null,
+                price: null
+            },
+            //列表表头
+            modelAttr:[
+                {display:'编号',attribute:'productId'},
+                {display:'商品名称',attribute:'productName'},
+                {display:'库存',attribute:'num'},
+                {display:'价格',attribute:'price'}
+            ]
+        },
+        created() {
+
+        },
+        methods: {
+
+            onSuccess(data){
+                this.$refs.myList.getModelList();
+                this.$refs.myForm.closeForm();
+            },
+
+            /**
+             * 编辑-弹窗
+             */
+            onEditForm(row) {
+                this.model = row;
+                this.$refs.myForm.showForm();
+                this.boxTitle='编辑商品-'+row.productName;
+            },
+
+            /**
+             * 新增-弹窗
+             */
+            onAddNewForm(){
+                this.model = {};
+                this.$refs.myForm.showForm();
+                this.boxTitle='新增商品';
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
